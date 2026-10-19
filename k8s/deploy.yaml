@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lab3-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: lab3-app
+  template:
+    metadata:
+      labels:
+        app: lab3-app
+    spec:
+      containers:
+      - name: app
+        image: us-central1-docker.pkg.dev/project-52e97659-d51c-48c9-b06/lab3/lab3-app:IMAGE_TAG
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lab3-app
+spec:
+  type: ClusterIP
+  selector:
+    app: lab3-app
+  ports:
+  - port: 80
+    targetPort: 8080
