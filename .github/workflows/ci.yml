@@ -48,6 +48,8 @@ jobs:
             service_account: ${{ secrets.GCP_SA_DEPLOYER }}
 
         - uses: google-github-actions/setup-gcloud@v2
+                with:
+                  install_components: gke-cloud-auth-plugin
 
         - name: credentials del cluster
           run: |
