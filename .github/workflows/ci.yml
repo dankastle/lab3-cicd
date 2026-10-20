@@ -62,4 +62,4 @@ jobs:
             sed "s/IMAGE_TAG/${{ github.sha }}/" k8s/deploy.yaml | kubectl apply -f -
 
         - name: esperar a que el rollout termine
-                  run: kubectl -n finca rollout status deployment/lab3-app --timeout=180s   
+          run: kubectl -n finca rollout status deployment/lab3-app --timeout=180s   
