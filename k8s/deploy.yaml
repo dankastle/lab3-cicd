@@ -1,7 +1,22 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: finca
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: finca-config
+  namespace: finca
+data:
+  PARCELA_NOMBRE: "ladera-norte"
+  UMBRAL_HUMEDAD: "30"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: lab3-app
+  namespace: finca
 spec:
   replicas: 2
   selector:
@@ -17,6 +32,23 @@ spec:
         image: us-central1-docker.pkg.dev/project-52e97659-d51c-48c9-b06/lab3/lab3-app:IMAGE_TAG
         ports:
         - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: finca-config
+        - secretRef:
+            name: finca-secret
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 10
         resources:
           requests:
             cpu: 50m
@@ -28,6 +60,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: lab3-app
+  namespace: finca
 spec:
   type: ClusterIP
   selector:
